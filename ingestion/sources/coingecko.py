@@ -5,7 +5,7 @@ import httpx
 
 
 # Sample data fetch from CoinGecko and print in console
-async def fetch_sample_data():
+async def fetch_sample_data() -> None:
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
         "vs_currency": "usd",
@@ -24,7 +24,7 @@ async def fetch_sample_data():
 
 
 # Fetch top n coin IDs (by market cap)
-async def fetch_top_n_coin_ids(n: int):
+async def fetch_top_n_coin_ids(n: int) -> list[str]:
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
         "vs_currency": "usd",
@@ -42,7 +42,7 @@ async def fetch_top_n_coin_ids(n: int):
 
 
 # Fetch current market data for a list of coins
-async def fetch_current_market_data(coin_ids: list[str]):
+async def fetch_current_market_data(coin_ids: list[str]) -> list[dict]:
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
         "vs_currency": "usd",
