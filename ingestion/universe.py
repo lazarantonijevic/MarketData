@@ -1,0 +1,51 @@
+"""
+Sets a static list of coins that will be tracked in order to
+prevent issues with coins fluctuating in and out of the top N.
+ID, symbol and name of the coins are stored in a json file.
+"""
+
+import json
+from pathlib import Path
+
+from ingestion.sources.coingecko import fetch_top_n_coins
+
+UNIVERSE_FILE_PATH = Path("data/meta/universe.json")
+
+
+async def initialize_universe(top_n: int = 50) -> Path:
+    """
+    Fetch top_n coins from the API
+    Save them to universe.json
+    Return path to file
+    Raise FileExistsError if file already exists
+    """
+
+    if UNIVERSE_FILE_PATH.exists():
+        raise FileExistsError(
+            f"Universe file already exists at {UNIVERSE_FILE_PATH}. "
+            "Delete it manually to re-initialize."
+        )
+
+    coins = await fetch_top_n_coins(top_n)
+
+    UNIVERSE_FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    UNIVERSE_FILE_PATH.write_text(json.dumps(coins, indent=2), encoding="utf-8")
+
+    print(f"Initialized universe with {len(coins)} coins to {UNIVERSE_FILE_PATH}")
+    return UNIVERSE_FILE_PATH
+
+
+def load_universe() -> list[dict]:
+    """
+    Load coins from the json file
+    Return coin IDs, symbols and names as list of dicts
+    Raise FileNotFoundError if file is missing
+    """
+
+    if not UNIVERSE_FILE_PATH.exists():
+        raise FileNotFoundError(
+            f"Universe file not found at {UNIVERSE_FILE_PATH}. "
+            "Initiate the universe first."
+        )
+    return json.loads(UNIVERSE_FILE_PATH.read_text(encoding="utf-8"))

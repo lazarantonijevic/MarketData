@@ -33,6 +33,27 @@ async def fetch_top_n_coin_ids(n: int) -> list[str]:
         return [coin["id"] for coin in data]
 
 
+# Fetch IDs, symbols and names of top n coins (by market cap)
+async def fetch_top_n_coins(n: int) -> list[dict]:
+    url = f"{BASE_URL}/coins/markets"
+    params = {
+        "vs_currency": "usd",
+        "order": "market_cap_desc",
+        "per_page": str(n),
+        "page": "1",
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params, headers=get_header())
+        response.raise_for_status()
+        data = response.json()
+
+        return [
+            {"id": coin["id"], "symbol": coin["symbol"], "name": coin["name"]}
+            for coin in data
+        ]
+
+
 # Fetch current market data for a list of coins
 async def fetch_current_market_data(coin_ids: list[str]) -> list[dict]:
     url = f"{BASE_URL}/coins/markets"
