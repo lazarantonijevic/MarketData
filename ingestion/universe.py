@@ -2,8 +2,10 @@
 Sets a static list of coins that will be tracked in order to
 prevent issues with coins fluctuating in and out of the top N.
 ID, symbol and name of the coins are stored in a json file.
+Executable from command line with arguments
 """
 
+import argparse
 import json
 from pathlib import Path
 
@@ -49,3 +51,40 @@ def load_universe() -> list[dict]:
             "Initiate the universe first."
         )
     return json.loads(UNIVERSE_FILE_PATH.read_text(encoding="utf-8"))
+
+
+def get_coin(universe: list[dict], coin_id: str) -> dict:
+    """
+    Fetch a coin from the universer based on the ID
+    Raise KeyError if coin not found
+    """
+
+    for coin in universe:
+        if coin["id"] == coin_id:
+            return coin
+
+    raise KeyError(f"Coin '{coin_id}' not found in the list")
+
+
+if __name__ == "__main__":
+    import argparse
+    import asyncio
+
+    parser = argparse.ArgumentParser(description="Manage coin universe")
+
+    parser.add_argument("--init", action="store_true", help="Initialize universe.json")
+    parser.add_argument(
+        "--coins", type=int, default=50, help="Number of top coins (default 50)"
+    )
+    parser.add_argument("--list", action="store_true", help="Print current universe")
+
+    args = parser.parse_args()
+
+    if args.init:
+        asyncio.run(initialize_universe(top_n=args.coins))
+    elif args.list:
+        coins = load_universe()
+        for i, c in enumerate(coins, 1):
+            print(f"  {i:3d}. {c['id']:30s} {c['symbol']:8s} {c['name']}")
+    else:
+        parser.print_help()
