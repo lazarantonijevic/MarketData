@@ -68,6 +68,33 @@ async def fetch_current_market_data(coin_ids: list[str]) -> list[dict]:
         return response.json()
 
 
+# Fetch historical market data for a single coin
+async def fetch_coin_history(
+    coin_id: str, vs_currency: str = "usd", days: int = 89
+) -> dict:
+    """
+    Returns data in format:
+    {
+    "prices": [[timestamp,price], ...],
+    "market_caps": [[timestamp, mc], ...],
+    "total_volumes": [[timestamp, vol], ...]
+    }
+    """
+    if days > 89:
+        raise ValueError(
+            f"days parameter ({days}) must be 89 or less."
+            "Coingecko only returns hourly data points for intervals < 90 days."
+        )
+
+    url = f"{BASE_URL}/coins/{coin_id}/market_chart"
+    params = {"vs_currency": vs_currency, "days": str(days)}
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url=url, params=params, headers=get_header())
+        response.raise_for_status()
+        return response.json()
+
+
 if __name__ == "__main__":
     ids = asyncio.run(fetch_top_n_coin_ids(5))
     res = asyncio.run(fetch_current_market_data(ids))

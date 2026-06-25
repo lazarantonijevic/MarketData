@@ -67,6 +67,11 @@ def get_coin(universe: list[dict], coin_id: str) -> dict:
 
 
 if __name__ == "__main__":
+    """
+    python -m ingestion.universe --init --coins 50
+    python -m ingestion.universe --list
+    """
+
     import argparse
     import asyncio
 
