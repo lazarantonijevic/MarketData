@@ -1,10 +1,11 @@
 from datetime import datetime
 from pathlib import Path
 
+import duckdb
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from ingestion.models import CoinMarketRecord
+from ingestion.models import CoinMarketRecord, PipelineRun
 
 MARKET_DATA_SCHEMA = pa.schema(
     [
@@ -53,3 +54,37 @@ def write_market_data_batch(
 
     print(f"Wrote {len(records)} records to {out_path}")
     return out_path
+
+
+def log_pipeline_run(
+    run: PipelineRun, db_path: str = "data/meta/pipeline_runs.duckdb"
+) -> None:
+    """
+    Write a PipelineRun record to the DuckDB metadata table
+    """
+    con = duckdb.connect(db_path)
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS pipeline_runs (
+            run_id VARCHAR, started_at TIMESTAMP, finished_at TIMESTAMP,
+            status VARCHAR, records_written INTEGER, records_skipped INTEGER,
+            duration_seconds DOUBLE, error_message VARCHAR
+        )
+    """)
+
+    con.execute(
+        """
+        INSERT INTO pipeline_runs VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        [
+            run.run_id,
+            run.started_at,
+            run.finished_at,
+            run.status,
+            run.records_written,
+            run.records_skipped,
+            run.duration_seconds,
+            run.error_message,
+        ],
+    )
+
+    con.close()

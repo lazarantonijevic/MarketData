@@ -11,7 +11,7 @@ from ingestion.universe import load_universe
 DATA_RAW_PATH = "data/raw/prices"
 
 
-async def run_pipeline(num_coins: int = 50) -> None:
+async def run_pipeline() -> None:
     """Fetch market data for preset list of coins,
     validate via Pydantic, and write to Parquet."""
 
@@ -46,4 +46,4 @@ async def run_pipeline(num_coins: int = 50) -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(run_pipeline(num_coins=10))
+    asyncio.run(run_pipeline())

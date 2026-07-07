@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -55,3 +56,18 @@ class CoinHistoryRecord(BaseModel):
             low_24h=None,
             ingested_at=datetime.fromtimestamp(self.timestamp_ms / 1000, tz=UTC),
         )
+
+
+class PipelineRun(BaseModel):
+    """
+    Metadata for a pipeline run, to be logged to DuckDB
+    """
+
+    run_id: str
+    started_at: datetime
+    finished_at: datetime
+    status: Literal["success", "failed"]
+    records_written: int
+    records_skipped: int
+    duration_seconds: float
+    error_message: str | None = None
