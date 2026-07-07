@@ -55,7 +55,7 @@ def load_universe() -> list[dict]:
 
 def get_coin(universe: list[dict], coin_id: str) -> dict:
     """
-    Fetch a coin from the universer based on the ID
+    Fetch a coin from the universe based on the ID
     Raise KeyError if coin not found
     """
 

@@ -4,18 +4,18 @@ from datetime import UTC, datetime
 from pydantic import ValidationError
 
 from ingestion.models import CoinMarketRecord
-from ingestion.sources.coingecko import fetch_current_market_data, fetch_top_n_coin_ids
+from ingestion.sources.coingecko import fetch_current_market_data
 from ingestion.storage import write_market_data_batch
+from ingestion.universe import load_universe
 
 DATA_RAW_PATH = "data/raw/prices"
 
 
 async def run_pipeline(num_coins: int = 50) -> None:
-    """Fetch market data for top num_coins cryptocurrencies,
+    """Fetch market data for preset list of coins,
     validate via Pydantic, and write to Parquet."""
 
-    # To be replaced by a coins list that is generated on first run
-    coin_ids = await fetch_top_n_coin_ids(num_coins)
+    coin_ids = [coin["id"] for coin in load_universe()]
     raw_data = await fetch_current_market_data(coin_ids)
 
     # Validate rows using Pydantic model
