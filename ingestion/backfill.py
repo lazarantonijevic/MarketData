@@ -1,8 +1,13 @@
-"""
+r"""
 Backfill script that fetches historic hourly coin data from the past 89 days (or less).
 The fetched data is validated, grouped by days and stored in Parquet files.
 This script is intended for single use when starting up the project
 and is not part of the scheduled flow.
+
+script usage:
+python -m ingestion.backfill --help
+python -m ingestion.backfill --coins 50 --dry-run
+python -m ingestion.backfill --coins 50 --days 89 --base-path data\sample\path
 """
 
 import argparse

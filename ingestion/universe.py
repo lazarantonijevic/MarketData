@@ -3,6 +3,18 @@ Sets a static list of coins that will be tracked in order to
 prevent issues with coins fluctuating in and out of the top N.
 ID, symbol and name of the coins are stored in a json file.
 Executable from command line with arguments
+
+universe format:
+[
+  {"id": "bitcoin", "symbol": "btc", "name": "Bitcoin"},
+  {"id": "ethereum", "symbol": "eth", "name": "Ethereum"},
+  ...
+]
+
+script usage:
+python -m ingestion.universe --help
+python -m ingestion.universe --init --coins 50
+python -m ingestion.universe --list
 """
 
 import argparse
@@ -67,11 +79,6 @@ def get_coin(universe: list[dict], coin_id: str) -> dict:
 
 
 if __name__ == "__main__":
-    """
-    python -m ingestion.universe --init --coins 50
-    python -m ingestion.universe --list
-    """
-
     import argparse
     import asyncio
 
