@@ -3,7 +3,9 @@ import json
 import os
 
 import httpx
+from dotenv import load_dotenv
 
+load_dotenv()
 COINGECKO_API_KEY = os.getenv("COINGECKO_API_KEY")
 BASE_URL = "https://api.coingecko.com/api/v3"
 
