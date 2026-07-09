@@ -96,4 +96,4 @@ async def ingest_flow() -> None:
 
 if __name__ == "__main__":
     # Schedule Prefect flow to run every 15 minutes
-    ingest_flow.serve(name="crypto-ingest-15m", interval=90)
+    ingest_flow.serve(name="crypto-ingest-15m", interval=900)
