@@ -5,7 +5,10 @@ __pycache__/
 data/raw/**/*.parquet
 data/meta/*
 !data/meta/.gitkeep
+data/warehouse.duckdb
 logs
 transform/target/
 transform/dbt_packages/
 transform/logs/
+transform/profiles.yml
+transform/.user.yml
