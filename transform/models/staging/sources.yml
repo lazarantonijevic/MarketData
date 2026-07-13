@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw Parquet written by ingestion layer"
+    tables:
+      - name: raw_prices
+        description: "One row per coin per ingestion run"
+        loaded_at_field: ingested_at
+        freshness:
+          warn_after: {count: 1, period: hour}
+          #error_after: {count: , period: hour}
+        meta:
+          external_location: "read_parquet('{{ env_var('PROJECT_ROOT') }}/data/raw/prices/**/*.parquet', hive_partitioning=true)"
