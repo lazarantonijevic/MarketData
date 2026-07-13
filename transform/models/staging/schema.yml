@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: stg_prices
+    description: "Cleaned and typecasted market data snapshots from raw Parquet"
+    columns:
+      - name: coin_id
+        description: "CoinGecko coin identifier, lowercase"
+        data_tests:
+          - not_null
+
+      - name: symbol
+        description: "Coin ticker, lowercase"
+        data_tests:
+          - not_null
+
+      - name: name
+        description: "Coin name"
+        data_tests:
+          - not_null
+
+      - name: price_usd
+        description: "Coin price in USD"
+        data_tests:
+          - not_null
+
+      - name: market_cap
+        description: "Coin market cap in USD"
+
+      - name: vol_24h
+        description: "Coin trading volume in USD, last 24h"
+
+      - name: price_change_24h_pct
+        description: "Percentage price change, last 24h"
+
+      - name: high_24h
+        description: "Peak price in USD, last 24h"
+
+      - name: low_24h
+        description: "Bottom price in USD, last 24h"
+
+      - name: ingested_at
+        description: "Data ingestion timestamp, UTC"
+        data_tests:
+          - not_null
+
+      - name: date_day
+        description: "Data ingestion date"
+        data_tests:
+          - not_null
