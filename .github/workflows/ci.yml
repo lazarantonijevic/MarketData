@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Lint & Run ingestions tests
+    name: Lint, Run ingestion & dbt tests
     runs-on: ubuntu-latest
 
     steps:
@@ -32,3 +32,10 @@ jobs:
 
       - name: Run pytest
         run: uv run pytest tests/ -v
+
+      - name: Run dbt build
+        run: |
+          cd transform
+          uv run dbt build --target ci --profiles-dir .
+        env:
+          PROJECT_ROOT: ${{ github.workspace }}

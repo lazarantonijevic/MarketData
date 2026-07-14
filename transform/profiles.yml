@@ -1,0 +1,13 @@
+transform:
+  target: dev
+  outputs:
+
+    dev:
+      type: duckdb
+      path: "{{ env_var('PROJECT_ROOT') }}/data/warehouse.duckdb"
+      threads: 4
+
+    ci:
+      type: duckdb
+      path: ":memory:"
+      threads: 2

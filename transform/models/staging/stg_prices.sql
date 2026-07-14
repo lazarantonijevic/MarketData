@@ -1,5 +1,9 @@
 with source as (
-    select * from {{ source('raw', 'raw_prices') }}
+    {% if target.name == 'ci' %}
+        select * from {{ ref('raw_prices_sample') }}
+    {% else %}
+        select * from {{ source('raw', 'raw_prices') }}
+    {% endif %}
 ),
 
 cleaned as (
