@@ -11,4 +11,8 @@ sources:
           warn_after: {count: 1, period: hour}
           #error_after: {count: , period: hour}
         meta:
-          external_location: "read_parquet('{{ env_var('PROJECT_ROOT') }}/data/raw/prices/**/*.parquet', hive_partitioning=true)"
+          external_location: >-
+            read_parquet(
+              '{{ env_var("PROJECT_ROOT") }}/data/raw/prices/**/*.parquet',
+              hive_partitioning=true
+            )  
