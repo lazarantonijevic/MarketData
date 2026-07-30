@@ -16,8 +16,6 @@ class CoinMarketRecord(BaseModel):
     market_cap: float | None = None
     vol_24h: float | None = None
     price_change_24h_pct: float | None = None
-    high_24h: float | None = None
-    low_24h: float | None = None
     ingested_at: datetime
 
     @field_validator("coin_id", "symbol")
@@ -52,8 +50,6 @@ class CoinHistoryRecord(BaseModel):
             market_cap=self.market_cap,
             vol_24h=self.total_volume,
             price_change_24h_pct=None,
-            high_24h=None,
-            low_24h=None,
             ingested_at=datetime.fromtimestamp(self.timestamp_ms / 1000, tz=UTC),
         )
 

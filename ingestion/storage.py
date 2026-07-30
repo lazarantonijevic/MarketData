@@ -16,8 +16,6 @@ MARKET_DATA_SCHEMA = pa.schema(
         pa.field("market_cap", pa.float64()),
         pa.field("vol_24h", pa.float64()),
         pa.field("price_change_24h_pct", pa.float64()),
-        pa.field("high_24h", pa.float64()),
-        pa.field("low_24h", pa.float64()),
         pa.field("ingested_at", pa.timestamp("us", tz="UTC")),
     ]
 )

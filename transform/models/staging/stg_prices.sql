@@ -15,8 +15,6 @@ cleaned as (
         market_cap::double                          as market_cap,
         vol_24h::double                             as vol_24h,
         price_change_24h_pct::double                as price_change_24h_pct,
-        high_24h::double                            as high_24h,
-        low_24h::double                             as low_24h,
         ingested_at::timestamptz                    as ingested_at,
         date_trunc('day', ingested_at::timestamptz) as date_day
     from source

@@ -33,12 +33,6 @@ models:
       - name: price_change_24h_pct
         description: "Percentage price change, last 24h"
 
-      - name: high_24h
-        description: "Peak price in USD, last 24h"
-
-      - name: low_24h
-        description: "Bottom price in USD, last 24h"
-
       - name: ingested_at
         description: "Data ingestion timestamp, UTC"
         data_tests:

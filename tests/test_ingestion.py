@@ -30,8 +30,6 @@ def make_valid_market_record(**overrides) -> dict:
         "market_cap": 1500000000000,
         "vol_24h": 10000000000,
         "price_change_24h_pct": -5,
-        "high_24h": 80000.0,
-        "low_24h": 70000.0,
         "ingested_at": datetime.now(UTC),
     }
     return {**base, **overrides}
@@ -118,8 +116,6 @@ def test_optional_fields_none_ok():
             market_cap=None,
             vol_24h=None,
             price_change_24h_pct=None,
-            high_24h=None,
-            low_24h=None,
         )
     )
     assert record is not None
