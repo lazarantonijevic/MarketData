@@ -32,8 +32,6 @@ async def run_pipeline() -> tuple[int, int]:
                 market_cap=item.get("market_cap"),
                 vol_24h=item.get("total_volume"),
                 price_change_24h_pct=item.get("price_change_percentage_24h"),
-                high_24h=item.get("high_24h"),
-                low_24h=item.get("low_24h"),
                 ingested_at=datetime.now(UTC),
             )
             records.append(record)
