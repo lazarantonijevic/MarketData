@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: int_ohlcv_daily
+    description: >
+      Intermediate model, one row per coin per day. Aggregate intraday
+      prices to OHLC candles. Single source for downstream models.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [coin_id, date_day]
+    columns:
+      - name: coin_id
+        description: "CoinGecko coin identifier, lowercase"
+        data_tests:
+          - not_null
+
+      - name: date_day
+        description: "Data ingestion date"
+        data_tests:
+          - not_null
+
+      - name: open
+        description: "Open price (first data entry of the day)"
+        data_tests:
+          - not_null
+
+      - name: high
+        description: "Highest recorded price of the day"
+        data_tests:
+          - not_null
+
+      - name: low
+        description: "Lowest recorded price of the day"
+        data_tests:
+          - not_null
+
+      - name: close
+        description: "Close price (last data entry of the day)"
+        data_tests:
+          - not_null
+
+      - name: total_volume
+        description: "Coin trading volume in USD for the day"
+        data_tests:
+          - not_null
+
+      - name: market_cap
+        description: "Coin market cap in USD"
+        data_tests:
+          - not_null
+
+      - name: price_change_24h_pct
+        description: "Percentage price change for the day"
+
+      - name: symbol
+        description: "Coin ticker, lowercase"
+        data_tests:
+          - not_null
+
+      - name: name
+        description: "Coin name"
+        data_tests:
+          - not_null
+
+      - name: row_count
+        description: "Number of aggregated rows"
+        data_tests:
+          - not_null

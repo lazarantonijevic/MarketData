@@ -36,6 +36,7 @@ jobs:
       - name: Run dbt build
         run: |
           cd transform
+          uv run dbt deps
           uv run dbt build --target ci --profiles-dir .
         env:
           PROJECT_ROOT: ${{ github.workspace }}

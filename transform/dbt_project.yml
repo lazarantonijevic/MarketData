@@ -20,7 +20,6 @@ snapshot-paths: ["snapshots"]
 
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
-  - "dbt_packages"
 
 
 # Configuring models
@@ -31,7 +30,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   transform:
-    # Config indicated by + and applies to all files under models/staging/
+  
     staging:
       +materialized: view
-      +schema: staging
+    
+    intermediate:
+      +materialized: view
