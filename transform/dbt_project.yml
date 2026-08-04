@@ -36,3 +36,14 @@ models:
     
     intermediate:
       +materialized: view
+
+
+seeds:
+  transform:
+    raw_prices_sample:
+      +column_types:
+        price_usd:            double
+        market_cap:           double
+        vol_24h:              double
+        price_change_24h_pct: double
+        ingested_at:          timestamp with time zone
