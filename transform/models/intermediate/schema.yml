@@ -67,3 +67,32 @@ models:
         description: "Number of aggregated rows"
         data_tests:
           - not_null
+          
+  - name: int_rolling_avg
+    description: >
+      7-day and 30-day moving averages over the daily close price.
+      One row per coin per day.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [coin_id, date_day]
+    columns:
+      - name: coin_id
+        description: "CoinGecko coin identifier, lowercase"
+        data_tests:
+          - not_null
+
+      - name: date_day
+        description: "Data ingestion date"
+        data_tests:
+          - not_null
+
+      - name: ma_7d
+        description: "7 day moving average of the close price"
+        data_tests:
+          - not_null
+
+      - name: ma_30d
+        description: "30 day moving average of the close price"
+        data_tests:
+          - not_null
