@@ -36,6 +36,9 @@ models:
     
     intermediate:
       +materialized: view
+    
+    mart:
+      +materialized: table
 
 
 seeds:
