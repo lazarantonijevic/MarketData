@@ -6,8 +6,12 @@ transform:
       type: duckdb
       path: "{{ env_var('PROJECT_ROOT') }}/data/warehouse.duckdb"
       threads: 4
+      settings:
+        TimeZone: 'UTC'
 
     ci:
       type: duckdb
       path: ":memory:"
       threads: 2
+      settings:
+        TimeZone: 'UTC'
