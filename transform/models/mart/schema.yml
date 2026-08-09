@@ -58,6 +58,7 @@ models:
         description: "30 day moving average of the close price"
         data_tests:
           - not_null
+
   - name: mart_ohlcv
     description: >
       Full OHLCV time series. One row per coin per day for whole
@@ -121,3 +122,47 @@ models:
         description: "Number of aggregated rows"
         data_tests:
           - not_null
+          
+  - name: mart_anomalies
+    description: >
+      Volume anomalies flagged by Z-score over 2.5 standard
+      deviations away from the rolling average. One row per coin
+      per anomalous day.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [coin_id, date_day]
+    columns:
+      - name: coin_id
+        description: "CoinGecko coin identifier, lowercase"
+        data_tests:
+          - not_null
+
+      - name: date_day
+        description: "Data ingestion date"
+        data_tests:
+          - not_null
+
+      - name: total_volume
+        description: "Coin trading volume in USD for the day"
+        data_tests:
+          - not_null
+
+      - name: avg_volume_30d
+        description: "30 day moving average of the daily volume"
+        data_tests:
+          - not_null
+
+      - name: stddev_volume_30d
+        description: "30 day standard deviation of the volume"
+
+      - name: z_score
+        description: >
+          30 rolling Z-score for volume. Measures how far the current
+          daily volume deviates from the 30-day average in units
+          of standard deviation.
+
+      - name: severity
+        description: >
+          Z-score over 2.5 is considered as medium severity,
+          Z-score over 3 is considered as high severity.
