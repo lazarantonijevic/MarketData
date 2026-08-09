@@ -1,6 +1,9 @@
+import os
+import subprocess
 from datetime import UTC, datetime
 from uuid import uuid4
 
+from dotenv import load_dotenv
 from prefect import flow, task
 from pydantic import ValidationError
 
@@ -10,6 +13,8 @@ from ingestion.storage import log_pipeline_run, write_market_data_batch
 from ingestion.universe import load_universe
 
 DATA_RAW_PATH = "data/raw/prices"
+
+load_dotenv()
 
 
 async def run_pipeline() -> tuple[int, int]:
@@ -57,6 +62,32 @@ async def pipeline_task() -> tuple[int, int]:
     return await run_pipeline()
 
 
+@task(name="dbt-build", retries=1, retry_delay_seconds=30)
+def run_dbt_build() -> None:
+    print("Running dbt build...")
+
+    result = subprocess.run(
+        [
+            "dbt",
+            "build",
+            "--target",
+            os.environ.get("DBT_TARGET", "dev"),
+            "--project-dir",
+            os.environ.get("DBT_PROJECT_DIR", "transform"),
+            "--profiles-dir",
+            os.environ.get("DBT_PROFILES_DIR", "transform"),
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        print(f"dbt build failed:\n{result.stdout}\n{result.stderr}")
+        raise RuntimeError(f"dbt build failed with exit code {result.returncode}")
+
+    print(f"dbt build succeeded:\n{result.stdout}")
+
+
 @flow(name="crypto-ingestion", log_prints=True)
 async def ingest_flow() -> None:
     """
@@ -90,6 +121,11 @@ async def ingest_flow() -> None:
             error_message=error_message,
         )
     )
+
+    if written > 0:
+        run_dbt_build()
+    else:
+        print("No rows written - skipping dbt build")
 
 
 if __name__ == "__main__":
