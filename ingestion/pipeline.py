@@ -76,6 +76,8 @@ def run_dbt_build() -> None:
             os.environ.get("DBT_PROJECT_DIR", "transform"),
             "--profiles-dir",
             os.environ.get("DBT_PROFILES_DIR", "transform"),
+            "--select",
+            "mart",
         ],
         capture_output=True,
         text=True,
