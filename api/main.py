@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from api.routers import prices
+
 app = FastAPI(
     title="MarketData",
     description=(
@@ -8,6 +10,9 @@ app = FastAPI(
     ),
     version="1.0.0",
 )
+
+
+app.include_router(prices.router)
 
 
 @app.get("/")
