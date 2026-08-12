@@ -1137,11 +1137,13 @@ dependencies = [
     { name = "dbt-core" },
     { name = "dbt-duckdb" },
     { name = "duckdb" },
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "prefect" },
     { name = "pyarrow" },
     { name = "pydantic" },
     { name = "python-dotenv" },
+    { name = "uvicorn" },
 ]
 
 [package.dev-dependencies]
@@ -1157,11 +1159,13 @@ requires-dist = [
     { name = "dbt-core", specifier = ">=1.11.12" },
     { name = "dbt-duckdb", specifier = ">=1.10.1" },
     { name = "duckdb", specifier = ">=1.5.4" },
+    { name = "fastapi", specifier = ">=0.139.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "prefect", specifier = ">=3.7.7" },
     { name = "pyarrow", specifier = ">=24.0.0" },
     { name = "pydantic", specifier = ">=2.13.4" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
+    { name = "uvicorn", specifier = ">=0.51.0" },
 ]
 
 [package.metadata.requires-dev]
