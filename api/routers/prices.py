@@ -11,6 +11,20 @@ router = APIRouter(
 )
 
 
+COLUMNS = [
+    "coin_id",
+    "date_day",
+    "symbol",
+    "name",
+    "price_usd",
+    "total_volume",
+    "market_cap",
+    "price_change_24h_pct",
+    "ma_7d",
+    "ma_30d",
+]
+
+
 @router.get(
     "/",
     response_model=list[PriceSummaryResponse],
@@ -33,20 +47,7 @@ def get_all_prices(conn: duckdb.DuckDBPyConnection = Depends(get_db)):
         ORDER BY market_cap DESC NULLS LAST
     """).fetchall()
 
-    columns = [
-        "coin_id",
-        "date_day",
-        "symbol",
-        "name",
-        "price_usd",
-        "total_volume",
-        "market_cap",
-        "price_change_24h_pct",
-        "ma_7d",
-        "ma_30d",
-    ]
-
-    return [dict(zip(columns, row)) for row in rows]
+    return [dict(zip(COLUMNS, row)) for row in rows]
 
 
 @router.get(
@@ -79,17 +80,4 @@ def get_price(coin_id: str, conn: duckdb.DuckDBPyConnection = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Coin '{coin_id}' not found"
         )
 
-    columns = [
-        "coin_id",
-        "date_day",
-        "symbol",
-        "name",
-        "price_usd",
-        "total_volume",
-        "market_cap",
-        "price_change_24h_pct",
-        "ma_7d",
-        "ma_30d",
-    ]
-
-    return dict(zip(columns, row))
+    return dict(zip(COLUMNS, row))

@@ -40,6 +40,33 @@ def db():
          6000000000.0, 226000000000.0, 3.5, 1850.0, 1850.0)
     """)
 
+    conn.execute("""
+        CREATE TABLE mart_ohlcv (
+            coin_id                 VARCHAR,
+            symbol                  VARCHAR,
+            name                    VARCHAR,
+            date_day                DATE,
+            open                    DOUBLE,
+            high                    DOUBLE,
+            low                     DOUBLE,
+            close                   DOUBLE,
+            total_volume            DOUBLE,
+            market_cap              DOUBLE,
+            row_count               BIGINT
+        )
+    """)
+
+    conn.execute("""
+        INSERT INTO mart_ohlcv
+        VALUES
+        ('bitcoin', 'btc', 'Bitcoin', '2026-08-14',
+         64000.0, 66000.0, 63500.0, 65000.0,
+         21000000000.0, 1273000000000.0, 24),
+        ('bitcoin', 'btc', 'Bitcoin', '2026-08-14',
+         63000.0, 64500.0, 62000.0, 64000.0,
+         21000000000.0, 1274000000000.0, 24)
+    """)
+
     return conn
 
 
