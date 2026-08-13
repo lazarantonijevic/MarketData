@@ -14,3 +14,17 @@ class PriceSummaryResponse(BaseModel):
     price_change_24h_pct: float | None = None
     ma_7d: float
     ma_30d: float
+
+
+class OHLCVResponse(BaseModel):
+    coin_id: str
+    symbol: str
+    name: str
+    date_day: date
+    open: float
+    high: float
+    low: float
+    close: float
+    total_volume: float
+    market_cap: float
+    row_count: int
