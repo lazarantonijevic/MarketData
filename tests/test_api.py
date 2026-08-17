@@ -119,3 +119,66 @@ def test_get_ohlcv_missing_api_key_returns_422(client):
 def test_get_ohlcv_wrong_api_key_returns_401(client):
     response = client.get("/ohlcv/BITCOIN", headers={"X-Api-Key": "nope"})
     assert response.status_code == 401
+
+
+# --- /anomalies ---
+
+
+def test_get_anomalies_returns_200(client):
+    response = client.get("/anomalies/", headers=HEADERS)
+    assert response.status_code == 200
+
+
+def test_get_anomalies_returns_list(client):
+    response = client.get("/anomalies/", headers=HEADERS)
+    assert isinstance(response.json(), list)
+
+
+def test_get_anomalies_correct_row_count(client):
+    response = client.get("/anomalies/", headers=HEADERS)
+    assert len(response.json()) == 2
+
+
+def test_get_anomalies_response_shape(client):
+    response = client.get("/anomalies/", headers=HEADERS)
+    candle = response.json()[0]
+    assert "coin_id" in candle
+    assert "date_day" in candle
+    assert "total_volume" in candle
+    assert "avg_volume_30d" in candle
+    assert "stddev_volume_30d" in candle
+    assert "z_score" in candle
+    assert "severity" in candle
+
+
+def test_get_anomalies_ordered_by_zscore(client):
+    response = client.get("/anomalies/", headers=HEADERS)
+    zscores = [row["z_score"] for row in response.json()]
+    assert zscores == sorted(zscores, reverse=True)
+
+
+def test_get_anomalies_filter_high_severity(client):
+    response = client.get("/anomalies/?severity=high", headers=HEADERS)
+    assert response.status_code == 200
+    assert all(row["severity"] == "high" for row in response.json())
+
+
+def test_get_anomalies_filter_medium_severity(client):
+    response = client.get("/anomalies/?severity=medium", headers=HEADERS)
+    assert response.status_code == 200
+    assert all(row["severity"] == "medium" for row in response.json())
+
+
+def test_get_anomalies_invalid_severity_returns_422(client):
+    response = client.get("/anomalies/?severity=extreme", headers=HEADERS)
+    assert response.status_code == 422
+
+
+def test_get_anomalies_missing_api_keys_returns_422(client):
+    response = client.get("/anomalies/")
+    assert response.status_code == 422
+
+
+def test_get_anomalies_wrong_api_keys_returns_401(client):
+    response = client.get("/anomalies/", headers={"X-Api-Key": "nope"})
+    assert response.status_code == 401

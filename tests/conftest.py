@@ -67,6 +67,26 @@ def db():
          21000000000.0, 1274000000000.0, 24)
     """)
 
+    conn.execute("""
+        CREATE TABLE mart_anomalies (
+            coin_id                 VARCHAR,
+            date_day                DATE,
+            total_volume            DOUBLE,
+            avg_volume_30d          DOUBLE,
+            stddev_volume_30d       DOUBLE,
+            z_score                 DOUBLE,
+            severity                VARCHAR
+        )
+    """)
+
+    conn.execute("""
+        INSERT INTO mart_anomalies VALUES
+        ('bitcoin', '2026-08-12',
+        55000000000.0, 28000000000.0, 5000000000.0, 3.4, 'high'),
+        ('ethereum', '2026-08-17',
+        18000000000.0, 12000000000.0, 2000000000.0, 2.7, 'medium')
+    """)
+
     return conn
 
 
