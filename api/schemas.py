@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -38,3 +39,14 @@ class AnomalyResponse(BaseModel):
     stddev_volume_30d: float
     z_score: float
     severity: str
+
+
+class HealthResponse(BaseModel):
+    run_id: str
+    started_at: datetime
+    finished_at: datetime
+    status: Literal["success", "failed"]
+    records_written: int
+    records_skipped: int
+    duration_seconds: float
+    error_message: str | None = None

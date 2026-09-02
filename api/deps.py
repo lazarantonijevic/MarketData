@@ -13,6 +13,12 @@ def get_db() -> duckdb.DuckDBPyConnection:
     return conn
 
 
+def get_meta_db() -> duckdb.DuckDBPyConnection:
+    conn = duckdb.connect(os.environ["DUCKDB_META_PATH"], read_only=True)
+    conn.execute("SET TimeZone='UTC'")
+    return conn
+
+
 def verify_api_key(x_api_key: str = Header(...)) -> None:
     if x_api_key != os.environ["API_KEY"]:
         raise HTTPException(

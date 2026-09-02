@@ -2,12 +2,13 @@ import os
 
 os.environ.setdefault("API_KEY", "test-key-for-pytest")
 os.environ.setdefault("DUCKDB_WAREHOUSE_PATH", ":memory:")
+os.environ.setdefault("DUCKDB_META_PATH", ":memory:")
 
 import duckdb
 import pytest
 from fastapi.testclient import TestClient
 
-from api.deps import get_db
+from api.deps import get_db, get_meta_db
 from api.main import app
 
 
@@ -91,7 +92,41 @@ def db():
 
 
 @pytest.fixture
-def client(db):
+def meta_db():
+    conn = duckdb.connect(":memory:")
+    conn.execute("SET TimeZone='UTC'")
+
+    conn.execute("""
+        CREATE TABLE pipeline_runs (
+            run_id                  VARCHAR,
+            started_at              TIMESTAMP,
+            finished_at             TIMESTAMP,
+            status                  VARCHAR,
+            records_written         INTEGER,
+            records_skipped         INTEGER,
+            duration_seconds        DOUBLE,
+            error_message           VARCHAR
+        )
+    """)
+
+    conn.execute("""
+        INSERT INTO pipeline_runs VALUES
+        ('abc123',
+        '2026-09-02T12:00:00'::TIMESTAMP,
+        '2026-09-02T12:00:05'::TIMESTAMP,
+        'success', 50, 0, 5.2, NULL),
+        ('abc124',
+        '2026-09-01T12:00:00'::TIMESTAMP,
+        '2026-09-01T12:00:05'::TIMESTAMP,
+        'success', 50, 0, 5.2, NULL)
+    """)
+
+    return conn
+
+
+@pytest.fixture
+def client(db, meta_db):
     app.dependency_overrides[get_db] = lambda: db
+    app.dependency_overrides[get_meta_db] = lambda: meta_db
     yield TestClient(app)
     app.dependency_overrides.clear()
