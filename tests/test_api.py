@@ -182,3 +182,48 @@ def test_get_anomalies_missing_api_keys_returns_422(client):
 def test_get_anomalies_wrong_api_keys_returns_401(client):
     response = client.get("/anomalies/", headers={"X-Api-Key": "nope"})
     assert response.status_code == 401
+
+
+# --- /health ---
+
+
+def test_get_health_returns_200(client):
+    response = client.get("/health/")
+    assert response.status_code == 200
+
+
+def test_get_health_response_shape(client):
+    response = client.get("/health/")
+    data = response.json()
+    assert "run_id" in data
+    assert "started_at" in data
+    assert "finished_at" in data
+    assert "status" in data
+    assert "records_written" in data
+    assert "records_skipped" in data
+    assert "duration_seconds" in data
+
+
+def test_get_health_returns_most_recent_run(client):
+    response = client.get("/health/")
+    assert response.json()["run_id"] == "abc123"
+
+
+def test_get_health_returns_success_status(client):
+    response = client.get("/health/")
+    assert response.json()["status"] == "success"
+
+
+def test_get_health_correct_records_written(client):
+    response = client.get("/health/")
+    assert response.json()["records_written"] == 50
+
+
+def test_get_health_correct_records_skipped(client):
+    response = client.get("/health/")
+    assert response.json()["records_skipped"] == 0
+
+
+def test_get_health_correct_duration(client):
+    response = client.get("/health/")
+    assert response.json()["duration_seconds"] == 5.2

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.routers import anomalies, ohlcv, prices
+from api.routers import anomalies, health, ohlcv, prices
 
 app = FastAPI(
     title="MarketData",
@@ -15,6 +15,7 @@ app = FastAPI(
 app.include_router(prices.router)
 app.include_router(ohlcv.router)
 app.include_router(anomalies.router)
+app.include_router(health.router)
 
 
 @app.get("/")
