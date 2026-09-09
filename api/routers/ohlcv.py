@@ -1,5 +1,5 @@
 import duckdb
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from api.deps import get_db, verify_api_key
 from api.schemas import OHLCVResponse
@@ -18,6 +18,8 @@ router = APIRouter(
 )
 def get_ohlcv(
     coin_id: str,
+    limit: int = Query(default=90, le=365),
+    offset: int = Query(default=0, ge=0),
     conn: duckdb.DuckDBPyConnection = Depends(get_db),
 ):
     cursor = conn.execute(
@@ -37,8 +39,9 @@ def get_ohlcv(
         FROM mart_ohlcv
         WHERE coin_id = ?
         ORDER BY date_day ASC
+        LIMIT ? OFFSET ?
     """,
-        [coin_id.lower()],
+        [coin_id.lower(), limit, offset],
     )
 
     columns = [desc[0] for desc in cursor.description]

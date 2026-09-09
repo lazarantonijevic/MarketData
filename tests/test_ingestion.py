@@ -225,10 +225,8 @@ def test_write_schema_matches():
             for i in range(3)
         ]
         path = write_market_data_batch(records, tmp, datetime.now(UTC))
-        table = pq.read_table(path)
-        # drop auto-generated partition column before comparing
-        table = table.drop(["date"])
-        assert table.schema.equals(MARKET_DATA_SCHEMA)
+        file_schema = pq.ParquetFile(path).schema_arrow
+        assert file_schema.equals(MARKET_DATA_SCHEMA)
 
 
 def test_write_empty_records_error():

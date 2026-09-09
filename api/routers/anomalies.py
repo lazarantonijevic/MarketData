@@ -18,6 +18,8 @@ router = APIRouter(
 )
 def get_anomalies(
     severity: str | None = Query(default=None, pattern="^(high|medium)$"),
+    limit: int = Query(default=50, le=200),
+    offset: int = Query(default=0, ge=0),
     conn: duckdb.DuckDBPyConnection = Depends(get_db),
 ):
     query = """
@@ -32,12 +34,15 @@ def get_anomalies(
         FROM mart_anomalies
         {}
         ORDER BY abs(z_score) DESC
+        LIMIT ? OFFSET ?
     """
 
     if severity:
-        cursor = conn.execute(query.format("WHERE severity = ?"), [severity])
+        cursor = conn.execute(
+            query.format("WHERE severity = ?"), [severity, limit, offset]
+        )
     else:
-        cursor = conn.execute(query.format(""))
+        cursor = conn.execute(query.format(""), [limit, offset])
 
     columns = [desc[0] for desc in cursor.description]
     rows = cursor.fetchall()
