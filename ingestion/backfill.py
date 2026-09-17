@@ -14,7 +14,7 @@ import argparse
 import asyncio
 import time
 from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pyarrow.parquet as pq
@@ -49,6 +49,16 @@ def check_partition_exists(base_path: Path, date_str: str, coin_id: str) -> bool
     return False
 
 
+def coin_fully_backfilled(base_path: Path, coin_id: str, days: int) -> bool:
+    today = datetime.now(UTC).date()
+    for offset in range(days):
+        check_date = today - timedelta(days=offset)
+        date_str = check_date.strftime("%Y-%m-%d")
+        if not check_partition_exists(base_path, date_str, coin_id):
+            return False
+    return True
+
+
 async def backfill_coin(
     coin_id: str, symbol: str, name: str, days: int, base_path: Path
 ) -> int:
@@ -56,6 +66,11 @@ async def backfill_coin(
     Fetch history, parse and write to Parquet the data for one coin
     Returns the number of written records
     """
+
+    # Early stop if the coin is already fully backfilled
+    if coin_fully_backfilled(base_path, coin_id, days):
+        print(f"{coin_id} already fully backfilled, skipping API call.")
+        return 0
 
     # Fetch from API
     try:
