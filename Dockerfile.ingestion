@@ -4,8 +4,10 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
-RUN useradd --create-home appuser
-RUN chown -R appuser:appuser /app
+RUN useradd --create-home appuser \
+    && mkdir -p /data \
+    && chown -R appuser:appuser /app /data
+
 USER appuser
 
 COPY --chown=appuser:appuser pyproject.toml uv.lock ./
@@ -14,4 +16,4 @@ RUN uv sync --frozen --no-dev
 COPY --chown=appuser:appuser ingestion/ ./ingestion/
 COPY --chown=appuser:appuser transform/ ./transform/
 
-CMD ["uv", "run", "python", "-m", "ingestion.pipeline"]
+CMD ["sh", "-c", "uv run python -m ingestion.startup && uv run python -m ingestion.pipeline"]
