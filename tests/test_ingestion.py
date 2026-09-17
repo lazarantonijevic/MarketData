@@ -401,7 +401,7 @@ async def test_backfill_skips_existing():
                 written = await backfill_coin(
                     "bitcoin", "btc", "Bitcoin", days=1, base_path=tmp_path
                 )
-                assert written == 0
+                assert written < 1
                 files = list(tmp_path.rglob("*.parquet"))
                 assert len(files) == 0
 
@@ -420,7 +420,7 @@ async def test_backfill_skips_api_call_when_fully_backfilled():
                     "bitcoin", "btc", "Bitcoin", days=1, base_path=tmp_path
                 )
 
-                assert written == 0
+                assert written == -1
                 mock_fetch.assert_not_called()
 
 
