@@ -70,7 +70,7 @@ async def backfill_coin(
     # Early stop if the coin is already fully backfilled
     if coin_fully_backfilled(base_path, coin_id, days):
         print(f"{coin_id} already fully backfilled, skipping API call.")
-        return 0
+        return -1
 
     # Fetch from API
     try:
@@ -227,8 +227,10 @@ async def main():
 
         if written > 0:
             num_written += written
-        else:
+        elif written == 0:
             errors += 1
+        else:
+            continue
         print(f"[{index}/{len(tracked_coins)}] Wrote {written} records for {coin_id}")
 
         # Sleep 1 second between coins for API rate limiting purposes
