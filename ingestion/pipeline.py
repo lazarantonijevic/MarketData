@@ -15,6 +15,7 @@ from ingestion.universe import load_universe
 load_dotenv()
 
 DATA_RAW_PATH = os.environ["DATA_RAW_PATH"]
+DUCKDB_META_PATH = os.environ["DUCKDB_META_PATH"]
 
 
 async def run_pipeline() -> tuple[int, int]:
@@ -121,7 +122,8 @@ async def ingest_flow() -> None:
             records_skipped=skipped,
             duration_seconds=(finished_at - started_at).total_seconds(),
             error_message=error_message,
-        )
+        ),
+        db_path=DUCKDB_META_PATH,
     )
 
     if written > 0:
