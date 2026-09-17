@@ -40,3 +40,4 @@ jobs:
           uv run dbt build --target ci --profiles-dir .
         env:
           PROJECT_ROOT: ${{ github.workspace }}
+          DATA_RAW_PATH: ${{ github.workspace }}/data/raw/prices

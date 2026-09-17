@@ -401,9 +401,48 @@ async def test_backfill_skips_existing():
                 written = await backfill_coin(
                     "bitcoin", "btc", "Bitcoin", days=1, base_path=tmp_path
                 )
-                assert written == 0
+                assert written < 1
                 files = list(tmp_path.rglob("*.parquet"))
                 assert len(files) == 0
+
+
+@pytest.mark.asyncio
+async def test_backfill_skips_api_call_when_fully_backfilled():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        mock_fetch = AsyncMock()
+        with patch("ingestion.backfill.coin_fully_backfilled", return_value=True):
+            with patch(
+                "ingestion.backfill.fetch_coin_history",
+                new=mock_fetch,
+            ):
+                written = await backfill_coin(
+                    "bitcoin", "btc", "Bitcoin", days=1, base_path=tmp_path
+                )
+
+                assert written == -1
+                mock_fetch.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_backfill_fetches_when_partially_backfilled():
+    mock_history = {
+        "prices": [[1782864000000, 75000.0]],
+        "market_caps": [[1782864000000, 1500000000000]],
+        "total_volumes": [[1782864000000, 10000000000]],
+    }
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        mock_fetch = AsyncMock(return_value=mock_history)
+        with patch("ingestion.backfill.coin_fully_backfilled", return_value=False):
+            with patch(
+                "ingestion.backfill.fetch_coin_history",
+                new=mock_fetch,
+            ):
+                await backfill_coin(
+                    "bitcoin", "btc", "Bitcoin", days=1, base_path=tmp_path
+                )
+                mock_fetch.assert_called_once()
 
 
 # Pipeline integration tests

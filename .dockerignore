@@ -1,0 +1,13 @@
+.github/
+.git/
+.pytest_cache/
+.ruff_cache/
+.venv/
+data/
+tests/
+transform/analyses/
+transform/dbt_packages/
+transform/logs/
+transform/target/
+.env
+*.pyc

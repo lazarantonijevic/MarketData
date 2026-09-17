@@ -4,7 +4,7 @@ transform:
 
     dev:
       type: duckdb
-      path: "{{ env_var('PROJECT_ROOT') }}/data/warehouse.duckdb"
+      path: "{{ env_var('DUCKDB_WAREHOUSE_PATH') }}"
       threads: 4
       settings:
         TimeZone: 'UTC'
@@ -12,6 +12,13 @@ transform:
     ci:
       type: duckdb
       path: ":memory:"
+      threads: 2
+      settings:
+        TimeZone: 'UTC'
+    
+    prod:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_WAREHOUSE_PATH') }}"
       threads: 2
       settings:
         TimeZone: 'UTC'

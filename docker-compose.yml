@@ -1,0 +1,54 @@
+services:
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    command: prefect server start --host 0.0.0.0
+    ports:
+      - "4200:4200"
+    environment:
+      PREFECT_SERVER_API_HOST: 0.0.0.0
+      PREFECT_UI_URL: http://localhost:4200/api
+      PREFECT_API_URL: http://localhost:4200/api
+    volumes:
+      - prefect_data:/root/.prefect
+    restart: unless-stopped
+
+  ingestion:
+    build:
+      context: .
+      dockerfile: Dockerfile.ingestion
+    environment:
+      PREFECT_API_URL: http://prefect-server:4200/api
+      DUCKDB_WAREHOUSE_PATH: /data/warehouse.duckdb
+      DUCKDB_META_PATH: /data/meta/pipeline_runs.duckdb
+      PROJECT_ROOT: /app
+      DBT_PROFILES_DIR: /app/transform
+      DBT_PROJECT_DIR: /app/transform
+      DBT_TARGET: prod
+      COINGECKO_API_KEY: ${COINGECKO_API_KEY:-}
+      DATA_RAW_PATH: /data/raw/prices
+      UNIVERSE_FILE_PATH: /data/meta/universe.json
+      NUM_COINS: ${NUM_COINS:-50}
+      BACKFILL_DAYS: ${BACKFILL_DAYS:-89}
+    volumes:
+      - shared_data:/data
+    depends_on:
+      - prefect-server
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      DUCKDB_WAREHOUSE_PATH: /data/warehouse.duckdb
+      DUCKDB_META_PATH: /data/meta/pipeline_runs.duckdb
+      API_KEY: ${API_KEY}
+    volumes:
+      - shared_data:/data:ro
+    restart: unless-stopped
+
+volumes:
+  shared_data:
+  prefect_data:

@@ -19,11 +19,16 @@ python -m ingestion.universe --list
 
 import argparse
 import json
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 from ingestion.sources.coingecko import fetch_top_n_coins
 
-UNIVERSE_FILE_PATH = Path("data/meta/universe.json")
+load_dotenv()
+
+UNIVERSE_FILE_PATH = Path(os.environ["UNIVERSE_FILE_PATH"])
 
 
 async def initialize_universe(top_n: int = 50) -> Path:

@@ -13,6 +13,6 @@ sources:
         meta:
           external_location: >-
             read_parquet(
-              '{{ env_var("PROJECT_ROOT") }}/data/raw/prices/**/*.parquet',
+              '{{ env_var("DATA_RAW_PATH") }}/**/*.parquet',
               hive_partitioning=true
             )  

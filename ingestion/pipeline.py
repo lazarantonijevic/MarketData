@@ -12,9 +12,10 @@ from ingestion.sources.coingecko import fetch_current_market_data
 from ingestion.storage import log_pipeline_run, write_market_data_batch
 from ingestion.universe import load_universe
 
-DATA_RAW_PATH = "data/raw/prices"
-
 load_dotenv()
+
+DATA_RAW_PATH = os.environ["DATA_RAW_PATH"]
+DUCKDB_META_PATH = os.environ["DUCKDB_META_PATH"]
 
 
 async def run_pipeline() -> tuple[int, int]:
@@ -121,7 +122,8 @@ async def ingest_flow() -> None:
             records_skipped=skipped,
             duration_seconds=(finished_at - started_at).total_seconds(),
             error_message=error_message,
-        )
+        ),
+        db_path=DUCKDB_META_PATH,
     )
 
     if written > 0:

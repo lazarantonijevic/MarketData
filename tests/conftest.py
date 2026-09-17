@@ -3,6 +3,8 @@ import os
 os.environ.setdefault("API_KEY", "test-key-for-pytest")
 os.environ.setdefault("DUCKDB_WAREHOUSE_PATH", ":memory:")
 os.environ.setdefault("DUCKDB_META_PATH", ":memory:")
+os.environ.setdefault("UNIVERSE_FILE_PATH", "data/meta/universe.json")
+os.environ.setdefault("DATA_RAW_PATH", "data/raw/prices")
 
 import duckdb
 import pytest
