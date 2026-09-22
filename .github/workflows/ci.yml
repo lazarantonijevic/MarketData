@@ -42,7 +42,7 @@ jobs:
           PROJECT_ROOT: ${{ github.workspace }}
           DATA_RAW_PATH: ${{ github.workspace }}/data/raw/prices
 
-  publish-dbt-docs::
+  publish-dbt-docs:
     needs: [ci]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
