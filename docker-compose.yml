@@ -29,6 +29,7 @@ services:
       UNIVERSE_FILE_PATH: /data/meta/universe.json
       NUM_COINS: ${NUM_COINS:-50}
       BACKFILL_DAYS: ${BACKFILL_DAYS:-89}
+      PYTHONUNBUFFERED: "1"
     volumes:
       - shared_data:/data
     depends_on:
