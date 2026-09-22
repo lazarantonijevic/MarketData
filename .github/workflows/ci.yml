@@ -65,6 +65,8 @@ jobs:
       - name: Generate dbt docs
         run: uv run dbt docs generate --target ci --profiles-dir .
         working-directory: transform
+        env:
+          DATA_RAW_PATH: ${{ github.workspace }}/data/raw/prices
       
       - name: Publihs on GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
