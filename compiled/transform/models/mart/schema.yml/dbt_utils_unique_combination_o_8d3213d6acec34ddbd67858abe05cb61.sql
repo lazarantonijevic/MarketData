@@ -1,0 +1,20 @@
+
+
+
+
+
+
+with validation_errors as (
+
+    select
+        coin_id, date_day
+    from "memory"."main"."mart_price_summary"
+    group by coin_id, date_day
+    having count(*) > 1
+
+)
+
+select *
+from validation_errors
+
+
