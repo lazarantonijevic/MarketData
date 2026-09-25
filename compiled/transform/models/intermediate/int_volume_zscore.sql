@@ -18,7 +18,13 @@ windowed as (
             partition by coin_id
             order by date_day
             range between interval '29 days' preceding and current row
-        )                                               as stddev_volume_30d
+        )                                               as stddev_volume_30d,
+
+        count(*) over (
+            partition by coin_id
+            order by date_day
+            range between interval '29 days' preceding and current row
+        )                                               as observation_count
     from source
     where total_volume is not null
 )
@@ -29,8 +35,10 @@ select
     total_volume,
     avg_volume_30d,
     stddev_volume_30d,
+    observation_count,
 
     case
+        when observation_count < 10 then null
         when stddev_volume_30d = 0 or stddev_volume_30d is null
         then null
         else (total_volume - avg_volume_30d) / stddev_volume_30d

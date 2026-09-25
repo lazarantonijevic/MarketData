@@ -12,6 +12,7 @@ select
     case
         when abs(z_score) > 3.0 then 'high'
         else 'medium'
-    end                                                 as severity
+    end                                                 as severity,
+    observation_count
 from source
 where abs(z_score) > 2.5
