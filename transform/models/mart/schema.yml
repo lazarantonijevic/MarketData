@@ -166,3 +166,10 @@ models:
         description: >
           Z-score over 2.5 is considered as medium severity,
           Z-score over 3 is considered as high severity.
+
+      - name: observation_count
+        description: >
+          Number of observations within the 30-day rolling window.
+          Used for gating z_score validity.
+        data_tests:
+          - not_null

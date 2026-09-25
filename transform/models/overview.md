@@ -25,6 +25,6 @@ An end-to-end data engineering pipeline that ingests live and historical cryptoc
 - [`mart_ohlcv`](#!/model/model.crypto_platform.mart_ohlcv) — daily OHLCV candles
 - [`mart_anomalies`](#!/model/model.crypto_platform.mart_anomalies) — flagged volume anomalies
 
-Source: [GitHub repository](https://github.com/<your-username>/<repo-name>)
+Source: [GitHub repository](https://github.com/lazarantonijevic/MarketData)
 
 {% enddocs %}

@@ -102,6 +102,9 @@ models:
       30-day rolling Z-score on daily volume.
       Used to flag unusual volume behaviour.
       Rows where total_volume is null are excluded.
+      Not calculated when less then 10 data points
+      are available due to unreliable mean and stddev.
+
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -129,6 +132,14 @@ models:
 
       - name: stddev_volume_30d
         description: "30 day standard deviation of the volume"
+
+      - name: observation_count
+        description: >
+          Number of observations within the 30-day rolling window.
+          Used for gating z_score validity and suppressing z_score
+          calculation with fewer than 10 data points.
+        data_tests:
+          - not_null
 
       - name: z_score
         description: >
